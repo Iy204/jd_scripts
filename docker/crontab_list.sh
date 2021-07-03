@@ -123,3 +123,6 @@
 25 0,12,20 * * * node /scripts/jd_necklace_new.js >> /scripts/logs/jd_necklace_new.log 2>&1
 # 天天加速
 8 0-23/3 * * * node /scripts/jd_speed.js >> /scripts/logs/jd_speed.log 2>&1
+# 京东试用
+5 1 * * * node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
+

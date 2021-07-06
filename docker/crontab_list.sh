@@ -32,7 +32,7 @@
 # 宠汪汪
 45 */2,23 * * * node /scripts/jd_joy_new.js >> /scripts/logs/jd_joy_new.log 2>&1
 # 宠汪汪积分兑换京豆
-0 0-16/8 * * * node /scripts/jd_joy_reward.js >> /scripts/logs/jd_joy_reward.log 2>&1
+0 0-16/8 * * * node /scripts/jd_reward.js >> /scripts/logs/jd_reward.log 2>&1
 # 宠汪汪喂食
 35 */1 * * * node /scripts/jd_joy_feedPets.js >> /scripts/logs/jd_joy_feedPets.log 2>&1
 # 宠汪汪邀请助力
@@ -127,3 +127,7 @@
 5 1 * * * node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
 # 大乐透
 15 6 * * * node /scripts/jd_DrawEntrance.js >> /scripts/jd_DrawEntrance.log 2>&1
+# 汪汪乐园
+0 6 * * * node /scripts/jd_joy_park.js >> /scripts/jd_joy_park.log 2>&1
+# 许愿池
+0 7 * * * node /scripts/jd_wishingPool.js >> /scripts/jd_wishingPool.log 2>&1

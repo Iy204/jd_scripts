@@ -39,18 +39,20 @@ exports.__esModule = true;
 var axios_1 = require("axios");
 var TS_USER_AGENTS_1 = require("./TS_USER_AGENTS");
 var $ = {};
-var cookie = '', cookiesArr = [];
+var cookie = '', cookiesArr = [], res = '';
+var joyId = [], workJoyInfoList = [];
+var joyId1;
 !(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var i, taskVos, tasks, _i, tasks_1, t, _a, _b, tp, _c, _d, tp, _e, _f, tp;
-    return __generator(this, function (_g) {
-        switch (_g.label) {
+    var i, taskVos, tasks, _i, tasks_1, t, arr, _a, arr_1, name_1, times, apTaskDetail, taskResult, awardRes, i_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, requireConfig()];
             case 1:
-                _g.sent();
+                _b.sent();
                 i = 0;
-                _g.label = 2;
+                _b.label = 2;
             case 2:
-                if (!(i < cookiesArr.length)) return [3 /*break*/, 19];
+                if (!(i < cookiesArr.length)) return [3 /*break*/, 22];
                 cookie = cookiesArr[i];
                 $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)[1]);
                 $.index = i + 1;
@@ -58,86 +60,109 @@ var cookie = '', cookiesArr = [];
                 $.nickName = '';
                 return [4 /*yield*/, TotalBean()];
             case 3:
-                _g.sent();
+                _b.sent();
                 console.log("\n\u5F00\u59CB\u3010\u4EAC\u4E1C\u8D26\u53F7" + $.index + "\u3011" + ($.nickName || $.UserName) + "\n");
-                return [4 /*yield*/, api('healthyDay_getHomeData', { "appId": "1EFVQwQ", "taskToken": "", "channelId": 1 })];
+                return [4 /*yield*/, api('apTaskList', { "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
             case 4:
-                taskVos = _g.sent();
-                tasks = taskVos.data.result.taskVos;
+                taskVos = _b.sent();
+                tasks = taskVos.data;
                 _i = 0, tasks_1 = tasks;
-                _g.label = 5;
+                _b.label = 5;
             case 5:
-                if (!(_i < tasks_1.length)) return [3 /*break*/, 18];
+                if (!(_i < tasks_1.length)) return [3 /*break*/, 21];
                 t = tasks_1[_i];
-                console.log(t.taskName);
-                if (!(t.status === 1)) return [3 /*break*/, 17];
-                if (!t.shoppingActivityVos) return [3 /*break*/, 9];
-                _a = 0, _b = t.shoppingActivityVos;
-                _g.label = 6;
+                if (!(t.taskTitle === '汪汪乐园签到')) return [3 /*break*/, 10];
+                if (!(t.taskDoTimes === 0)) return [3 /*break*/, 9];
+                return [4 /*yield*/, api('apDoTask', { "taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
             case 6:
-                if (!(_a < _b.length)) return [3 /*break*/, 9];
-                tp = _b[_a];
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
+                res = _b.sent();
+                console.log('签到:', res);
+                return [4 /*yield*/, wait(1000)];
             case 7:
-                _g.sent();
-                _g.label = 8;
+                _b.sent();
+                return [4 /*yield*/, api('apTaskDrawAward', { "taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
             case 8:
-                _a++;
-                return [3 /*break*/, 6];
-            case 9:
-                if (!t.productInfoVos) return [3 /*break*/, 13];
-                _c = 0, _d = t.productInfoVos;
-                _g.label = 10;
+                _b.sent();
+                _b.label = 9;
+            case 9: return [3 /*break*/, 20];
             case 10:
-                if (!(_c < _d.length)) return [3 /*break*/, 13];
-                tp = _d[_c];
-                console.log(tp.skuName, tp.taskToken);
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
+                if (!(t.taskTitle === '汪汪乐园浏览会场' || t.taskTitle === '汪汪乐园浏览商品')) return [3 /*break*/, 20];
+                arr = ['汪汪乐园浏览会场', '汪汪乐园浏览商品'];
+                _a = 0, arr_1 = arr;
+                _b.label = 11;
             case 11:
-                _g.sent();
-                _g.label = 12;
+                if (!(_a < arr_1.length)) return [3 /*break*/, 20];
+                name_1 = arr_1[_a];
+                if (t.taskDoTimes + 1 === t.taskLimitTimes || t.taskDoTimes === t.taskLimitTimes)
+                    return [3 /*break*/, 19];
+                times = name_1 === '汪汪乐园浏览会场' ? 5 : 10;
+                return [4 /*yield*/, api('apTaskDetail', { "taskType": t.taskType, "taskId": t.id, "channel": 4, "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
             case 12:
-                _c++;
-                return [3 /*break*/, 10];
+                res = _b.sent();
+                apTaskDetail = void 0, taskResult = void 0, awardRes = void 0;
+                console.log(res.data);
+                i_1 = 0;
+                _b.label = 13;
             case 13:
-                if (!t.followShopVo) return [3 /*break*/, 17];
-                _e = 0, _f = t.followShopVo;
-                _g.label = 14;
+                if (!(i_1 < times)) return [3 /*break*/, 19];
+                try {
+                    apTaskDetail = res.data.taskItemList[i_1];
+                }
+                catch (e) {
+                    return [3 /*break*/, 19];
+                }
+                console.log('apTaskDetail:', apTaskDetail);
+                return [4 /*yield*/, api('apDoTask', { "taskType": t.taskType, "taskId": t.id, "channel": 4, "linkId": "LsQNxL7iWDlXUs6cFl-AAg", "itemId": encodeURIComponent(apTaskDetail.itemId) })];
             case 14:
-                if (!(_e < _f.length)) return [3 /*break*/, 17];
-                tp = _f[_e];
-                console.log(tp.shopName, tp.taskToken);
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, 0)];
+                taskResult = _b.sent();
+                console.log('doTask: ', JSON.stringify(taskResult));
+                if (taskResult.errMsg === '任务已完成')
+                    return [3 /*break*/, 19];
+                console.log('等待中...');
+                return [4 /*yield*/, wait(10000)];
             case 15:
-                _g.sent();
-                _g.label = 16;
+                _b.sent();
+                return [4 /*yield*/, api('apTaskDrawAward', { "taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
             case 16:
-                _e++;
-                return [3 /*break*/, 14];
+                awardRes = _b.sent();
+                if (awardRes.success && awardRes.code === 0)
+                    console.log(awardRes.data[0].awardGivenNumber);
+                else
+                    console.log('领取奖励出错:', JSON.stringify(awardRes));
+                return [4 /*yield*/, wait(1000)];
             case 17:
+                _b.sent();
+                _b.label = 18;
+            case 18:
+                i_1++;
+                return [3 /*break*/, 13];
+            case 19:
+                _a++;
+                return [3 /*break*/, 11];
+            case 20:
                 _i++;
                 return [3 /*break*/, 5];
-            case 18:
+            case 21:
                 i++;
                 return [3 /*break*/, 2];
-            case 19: return [2 /*return*/];
+            case 22: return [2 /*return*/];
         }
     });
 }); })();
-function api(Fn, body) {
+function api(fn, body) {
     var _this = this;
     return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
         var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1["default"].post("https://api.m.jd.com/client.action", "functionId=" + Fn + "&body=" + JSON.stringify(body) + "&client=wh5&clientVersion=1.0.0", {
+                case 0: return [4 /*yield*/, axios_1["default"].post("https://api.m.jd.com/", "functionId=" + fn + "&body=" + JSON.stringify(body) + "&_t=" + Date.now() + "&appid=activities_platform", {
                         headers: {
-                            'Referer': 'https://h5.m.jd.com/babelDiy/Zeus/UQwNm9fNDey3xNEUTSgpYikqnXR/index.html',
                             'Content-Type': 'application/x-www-form-urlencoded',
-                            'Origin': 'https://h5.m.jd.com',
                             'User-Agent': TS_USER_AGENTS_1["default"],
                             'Host': 'api.m.jd.com',
-                            'cookie': cookie
+                            'Referer': 'https://joypark.jd.com/',
+                            'Origin': 'https://joypark.jd.com',
+                            'Cookie': cookie
                         }
                     })];
                 case 1:
@@ -148,48 +173,31 @@ function api(Fn, body) {
         });
     }); });
 }
-function doTask(taskToken, taskId, timeout) {
+function joyList() {
     var _this = this;
     return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-        var res;
+        var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    if (!(timeout !== 0)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, api('harmony_collectScore', { "appId": "1EFVQwQ", "taskToken": taskToken, "taskId": taskId, "actionType": 1 })];
+                case 0: return [4 /*yield*/, axios_1["default"].get("https://api.m.jd.com/?functionId=joyList&body={%22linkId%22:%22LsQNxL7iWDlXUs6cFl-AAg%22}&_t=" + Date.now() + "&appid=activities_platform", {
+                        headers: {
+                            'host': 'api.m.jd.com',
+                            'User-agent': TS_USER_AGENTS_1["default"],
+                            'cookie': cookie,
+                            'origin': 'https://joypark.jd.com',
+                            'referer': 'https://joypark.jd.com'
+                        }
+                    })];
                 case 1:
-                    res = _a.sent();
-                    console.log('领取任务: ', res.data.bizMsg, '\n等待中...');
-                    return [4 /*yield*/, wait(timeout * 1000)];
-                case 2:
-                    _a.sent();
-                    _a.label = 3;
-                case 3: return [4 /*yield*/, api('harmony_collectScore', { "appId": "1EFVQwQ", "taskToken": taskToken, "taskId": taskId, "actionType": 0 })];
-                case 4:
-                    res = _a.sent();
-                    if (res.code === 0) {
-                        try {
-                            console.log("\u4EFB\u52A1\u6210\u529F: \u83B7\u5F97" + res.data.result.score * 1 + " \u4F59\u989D: " + res.data.result.userScore * 1);
-                        }
-                        catch (e) {
-                            console.log("\u4EFB\u52A1\u9519\u8BEF: ", JSON.stringify(res));
-                        }
-                    }
-                    return [4 /*yield*/, wait(1000)];
-                case 5:
-                    _a.sent();
-                    resolve();
+                    data = (_a.sent()).data;
+                    resolve(data);
                     return [2 /*return*/];
             }
         });
     }); });
 }
 function wait(t) {
-    return new Promise(function (resolve) {
-        setTimeout(function () {
-            resolve();
-        }, t);
-    });
+    return new Promise(function (e) { return setTimeout(e, t); });
 }
 function requireConfig() {
     return new Promise(function (resolve) {

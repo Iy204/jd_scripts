@@ -36,21 +36,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+/**
+ *
+ * Running time limit:
+ * s >= 58 or s <= 30  => exchange()
+ * s > 30 and s < 58  =>  wait...
+ *
+ */
 var axios_1 = require("axios");
 var TS_USER_AGENTS_1 = require("./TS_USER_AGENTS");
+var fs = require("fs");
 var $ = {};
-var cookie = '', cookiesArr = [];
+var cookie = '', cookiesArr = [], validate = '';
+var target = process.env.JD_JOY_REWARD_NAME ? parseInt(process.env.JD_JOY_REWARD_NAME) : 500;
 !(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var i, taskVos, tasks, _i, tasks_1, t, _a, _b, tp, _c, _d, tp, _e, _f, tp;
-    return __generator(this, function (_g) {
-        switch (_g.label) {
-            case 0: return [4 /*yield*/, requireConfig()];
+    var validate_arr, i, tasks, h, config, _i, config_1, bean;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                validate_arr = fs.readFileSync('./validate.txt', 'utf-8');
+                if (validate_arr.indexOf('\n')) {
+                    validate_arr = validate_arr.split('\n');
+                    validate_arr.pop();
+                }
+                return [4 /*yield*/, requireConfig()];
             case 1:
-                _g.sent();
+                _a.sent();
                 i = 0;
-                _g.label = 2;
+                _a.label = 2;
             case 2:
-                if (!(i < cookiesArr.length)) return [3 /*break*/, 19];
+                if (!(i < cookiesArr.length)) return [3 /*break*/, 9];
                 cookie = cookiesArr[i];
                 $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)[1]);
                 $.index = i + 1;
@@ -58,85 +73,59 @@ var cookie = '', cookiesArr = [];
                 $.nickName = '';
                 return [4 /*yield*/, TotalBean()];
             case 3:
-                _g.sent();
+                _a.sent();
                 console.log("\n\u5F00\u59CB\u3010\u4EAC\u4E1C\u8D26\u53F7" + $.index + "\u3011" + ($.nickName || $.UserName) + "\n");
-                return [4 /*yield*/, api('healthyDay_getHomeData', { "appId": "1EFVQwQ", "taskToken": "", "channelId": 1 })];
+                if (i < validate_arr.length)
+                    validate = validate_arr[i];
+                else {
+                    console.log('预存验证码不够用，退出！');
+                    return [3 /*break*/, 9];
+                }
+                return [4 /*yield*/, init()];
             case 4:
-                taskVos = _g.sent();
-                tasks = taskVos.data.result.taskVos;
-                _i = 0, tasks_1 = tasks;
-                _g.label = 5;
+                tasks = _a.sent();
+                h = new Date().getHours();
+                config = void 0;
+                if (h >= 0 && h < 8)
+                    config = tasks.data['beanConfigs0'];
+                if (h >= 8 && h < 16)
+                    config = tasks.data['beanConfigs8'];
+                if (h >= 16 && h < 24)
+                    config = tasks.data['beanConfigs16'];
+                _i = 0, config_1 = config;
+                _a.label = 5;
             case 5:
-                if (!(_i < tasks_1.length)) return [3 /*break*/, 18];
-                t = tasks_1[_i];
-                console.log(t.taskName);
-                if (!(t.status === 1)) return [3 /*break*/, 17];
-                if (!t.shoppingActivityVos) return [3 /*break*/, 9];
-                _a = 0, _b = t.shoppingActivityVos;
-                _g.label = 6;
+                if (!(_i < config_1.length)) return [3 /*break*/, 8];
+                bean = config_1[_i];
+                console.log(bean.id, bean.giftName, bean.leftStock);
+                if (!(bean.giftValue === target)) return [3 /*break*/, 7];
+                return [4 /*yield*/, exchange(bean.id)];
             case 6:
-                if (!(_a < _b.length)) return [3 /*break*/, 9];
-                tp = _b[_a];
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
+                _a.sent();
+                _a.label = 7;
             case 7:
-                _g.sent();
-                _g.label = 8;
-            case 8:
-                _a++;
-                return [3 /*break*/, 6];
-            case 9:
-                if (!t.productInfoVos) return [3 /*break*/, 13];
-                _c = 0, _d = t.productInfoVos;
-                _g.label = 10;
-            case 10:
-                if (!(_c < _d.length)) return [3 /*break*/, 13];
-                tp = _d[_c];
-                console.log(tp.skuName, tp.taskToken);
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
-            case 11:
-                _g.sent();
-                _g.label = 12;
-            case 12:
-                _c++;
-                return [3 /*break*/, 10];
-            case 13:
-                if (!t.followShopVo) return [3 /*break*/, 17];
-                _e = 0, _f = t.followShopVo;
-                _g.label = 14;
-            case 14:
-                if (!(_e < _f.length)) return [3 /*break*/, 17];
-                tp = _f[_e];
-                console.log(tp.shopName, tp.taskToken);
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, 0)];
-            case 15:
-                _g.sent();
-                _g.label = 16;
-            case 16:
-                _e++;
-                return [3 /*break*/, 14];
-            case 17:
                 _i++;
                 return [3 /*break*/, 5];
-            case 18:
+            case 8:
                 i++;
                 return [3 /*break*/, 2];
-            case 19: return [2 /*return*/];
+            case 9: return [2 /*return*/];
         }
     });
 }); })();
-function api(Fn, body) {
+function init() {
     var _this = this;
     return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
         var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1["default"].post("https://api.m.jd.com/client.action", "functionId=" + Fn + "&body=" + JSON.stringify(body) + "&client=wh5&clientVersion=1.0.0", {
+                case 0: return [4 /*yield*/, axios_1["default"].get("https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate=" + validate, {
                         headers: {
-                            'Referer': 'https://h5.m.jd.com/babelDiy/Zeus/UQwNm9fNDey3xNEUTSgpYikqnXR/index.html',
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Origin': 'https://h5.m.jd.com',
-                            'User-Agent': TS_USER_AGENTS_1["default"],
-                            'Host': 'api.m.jd.com',
+                            'Host': 'jdjoy.jd.com',
+                            'content-type': 'application/json',
+                            'origin': 'https://h5.m.jd.com',
+                            "User-Agent": TS_USER_AGENTS_1["default"],
+                            'referer': 'https://jdjoy.jd.com/',
                             'cookie': cookie
                         }
                     })];
@@ -148,36 +137,37 @@ function api(Fn, body) {
         });
     }); });
 }
-function doTask(taskToken, taskId, timeout) {
+function exchange(beanId) {
     var _this = this;
+    console.log('exchange()');
     return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-        var res;
+        var s, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(timeout !== 0)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, api('harmony_collectScore', { "appId": "1EFVQwQ", "taskToken": taskToken, "taskId": taskId, "actionType": 1 })];
-                case 1:
-                    res = _a.sent();
-                    console.log('领取任务: ', res.data.bizMsg, '\n等待中...');
-                    return [4 /*yield*/, wait(timeout * 1000)];
+                    if (!1) return [3 /*break*/, 4];
+                    s = new Date().getSeconds();
+                    if (!(s >= 58 || s <= 30)) return [3 /*break*/, 1];
+                    return [3 /*break*/, 4];
+                case 1: return [4 /*yield*/, wait(500)];
                 case 2:
                     _a.sent();
                     _a.label = 3;
-                case 3: return [4 /*yield*/, api('harmony_collectScore', { "appId": "1EFVQwQ", "taskToken": taskToken, "taskId": taskId, "actionType": 0 })];
-                case 4:
-                    res = _a.sent();
-                    if (res.code === 0) {
-                        try {
-                            console.log("\u4EFB\u52A1\u6210\u529F: \u83B7\u5F97" + res.data.result.score * 1 + " \u4F59\u989D: " + res.data.result.userScore * 1);
+                case 3: return [3 /*break*/, 0];
+                case 4: return [4 /*yield*/, axios_1["default"].post("https://jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&validate=" + validate, JSON.stringify({ "buyParam": { "orderSource": 'pet', "saleInfoId": beanId }, "deviceInfo": {} }), {
+                        headers: {
+                            "Host": "jdjoy.jd.com",
+                            "Accept-Language": "zh-cn",
+                            "Content-Type": "application/json",
+                            "Origin": "https://jdjoy.jd.com",
+                            "User-Agent": TS_USER_AGENTS_1["default"],
+                            "Referer": "https://jdjoy.jd.com/pet/index",
+                            "Cookie": cookie
                         }
-                        catch (e) {
-                            console.log("\u4EFB\u52A1\u9519\u8BEF: ", JSON.stringify(res));
-                        }
-                    }
-                    return [4 /*yield*/, wait(1000)];
+                    })];
                 case 5:
-                    _a.sent();
+                    data = (_a.sent()).data;
+                    console.log(data);
                     resolve();
                     return [2 /*return*/];
             }
@@ -185,11 +175,7 @@ function doTask(taskToken, taskId, timeout) {
     }); });
 }
 function wait(t) {
-    return new Promise(function (resolve) {
-        setTimeout(function () {
-            resolve();
-        }, t);
-    });
+    return new Promise(function (e) { return setTimeout(e, t); });
 }
 function requireConfig() {
     return new Promise(function (resolve) {

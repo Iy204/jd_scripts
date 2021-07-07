@@ -135,3 +135,5 @@
 0 6 * * * node /scripts/jd_joy_park.js >> /scripts/jd_joy_park.log 2>&1
 # 许愿池
 0 7 * * * node /scripts/jd_wishingPool.js >> /scripts/jd_wishingPool.log 2>&1
+# 送豆得豆
+0 4 * * * node /scripts/jd_sendBean.js >> /scripts/jd_sendBean.lg 2>&1

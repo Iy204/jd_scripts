@@ -129,8 +129,6 @@
 5 1 * * * node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
 # 大乐透
 15 6 * * * node /scripts/jd_DrawEntrance.js >> /scripts/jd_DrawEntrance.log 2>&1
-# 汪汪乐园
-0 6 * * * node /scripts/jd_joy_park.js >> /scripts/jd_joy_park.log 2>&1
 # 许愿池
 0 7 * * * node /scripts/jd_wishingPool.js >> /scripts/jd_wishingPool.log 2>&1
 # 送豆得豆

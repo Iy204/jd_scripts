@@ -30,9 +30,9 @@
 # 东东农场
 15 6-18/6 * * * node /scripts/jd_fruit.js >> /scripts/logs/jd_fruit.log 2>&1
 # 宠汪汪
-45 */2,23 * * * node /scripts/jd_joy_new.js >> /scripts/logs/jd_joy_new.log 2>&1
-# 验证
-58 23,7,15 * * * node /scripts/jd_validate_Worker.js >> /scripts/logs/jd_validate_Worker.log 2>&1
+15 0-23/2 * * * node /scripts/jd_joy.js >> /scripts/logs/jd_joy.log 2>&1
+# 宠汪汪偷积分
+10 0-21/3 * * * node /scripts/jd_joy_steal.js >> /scripts/logs/jd_joy_steal.log 2>&1
 # 宠汪汪积分兑换京豆
 0 0-16/8 * * * node /scripts/jd_joy_reward.js >> /scripts/logs/jd_joy_reward.log 2>&1
 # 宠汪汪喂食
@@ -123,5 +123,3 @@
 5 1 * * * node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
 # 大乐透
 15 6 * * * node /scripts/jd_DrawEntrance.js >> /scripts/jd_DrawEntrance.log 2>&1
-# 许愿池
-0 7 * * * node /scripts/jd_wishingPool.js >> /scripts/jd_wishingPool.log 2>&1

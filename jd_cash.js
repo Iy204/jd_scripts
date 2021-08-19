@@ -28,11 +28,11 @@ let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭�
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let helpAuthor = true;
-const randomCount = $.isNode() ? 5 : 5;
+const randomCount = $.isNode() ? 5 : 0;
 let cash_exchange = false;//是否消耗2元红包兑换200京豆，默认否
 const inviteCodes = [
-  `eU9Yau3kZ_4g-DiByHEQ0A@ZnQya-i1Y_UmpGzUnnEX@fkFwauq3ZA@f0JyJuW7bvQ@IhM0bu-0b_kv8W6E@eU9YKpnxOLhYtQSygTJQ@-oaWtXEHOrT_bNMMVso@eU9YG7XaD4lXsR2krgpG@KxMzZOW7YvQ@eU9Ya7jnZP5w822BmntC0g@eU9YPa34F5lnpBWRjyp3@eU9YarnmYfRwpTzUziAV1Q`,
-  `eU9Yau3kZ_4g-DiByHEQ0A@ZnQya-i1Y_UmpGzUnnEX@fkFwauq3ZA@f0JyJuW7bvQ@IhM0bu-0b_kv8W6E@eU9YKpnxOLhYtQSygTJQ@-oaWtXEHOrT_bNMMVso@eU9YG7XaD4lXsR2krgpG@KxMzZOW7YvQ@eU9Ya7jnZP5w822BmntC0g@eU9YPa34F5lnpBWRjyp3@eU9YarnmYfRwpTzUziAV1Q`,
+  `eU9YL5XqGLxSmRSAkwxR@eU9YaO7jMvwh-W_VzyUX0Q@eU9YaurkY69zoj3UniVAgg@eU9YaOnjYK4j-GvWmXIWhA@eU9YMZ_gPpRurC-foglg@eU9Ya77gZK5z-TqHn3UWhQ@eU9Yaui2ZP4gpG-Gz3EThA@eU9YaeizbvQnpG_SznIS0w@eU9Yab7gZ_py92rTyXcS0g@eU9Ya--7b65zpG7Umnsagw@eU9YarmyNagj8WzWmXQa1w@Ihgyb-q1YPkv9Wm6iw@eU9YEKXUL5VfmzSDggxO@eU9YaO2xZqhyo2jTwiYb3w@eU9YNJrlA41BkQ6JjRpV@eU9YaOS7M_x0pWiDzCZC3w@eU9Ya-7mN651-TuHwnMVhw@Ih43bu6yY_4l8Gy6iw`,
+  `-4msulYas0O2JsRhE-2TA5XZmBQ@eU9Yar_mb_9z92_WmXNG0w@eU9YaO7jMvwh-W_VzyUX0Q@eU9YaurkY69zoj3UniVAgg@eU9YaOnjYK4j-GvWmXIWhA@eU9YaO23bvtyozuGyHsR1A@eU9Yab7gZ_py92rTyXcS0g@eU9Ya--7b65zpG7Umnsagw@eU9YarmyNagj8WzWmXQa1w@Ihgyb-q1YPkv9Wm6iw@eU9YEKXUL5VfmzSDggxO@eU9YaO2xZqhyo2jTwiYb3w@eU9YNJrlA41BkQ6JjRpV@eU9YaOS7M_x0pWiDzCZC3w@eU9Ya-7mN651-TuHwnMVhw@Ih43bu6yY_4l8Gy6iw`
 ]
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -92,33 +92,33 @@ async function jdCash() {
   $.signMoney = 0;
   await index()
   await shareCodesFormat()
-  // await helpFriends()
+  await helpFriends()
   await getReward()
   await getReward('2');
   $.exchangeBeanNum = 0;
   cash_exchange = $.isNode() ? (process.env.CASH_EXCHANGE ? process.env.CASH_EXCHANGE : `${cash_exchange}`) : ($.getdata('cash_exchange') ? $.getdata('cash_exchange') : `${cash_exchange}`);
-  // if (cash_exchange === 'true') {
-  //   if(Number($.signMoney) >= 2){
-  //     console.log(`\n\n开始花费2元红包兑换200京豆，一周可换五次`)
-  //     for (let item of ["-1", "0", "1", "2", "3"]) {
-  //       $.canLoop = true;
-  //       if ($.canLoop) {
-  //         for (let i = 0; i < 5; i++) {
-  //           await exchange2(item);//兑换200京豆(2元红包换200京豆，一周5次。)
-  //         }
-  //         if (!$.canLoop) {
-  //           console.log(`已找到符合的兑换条件，跳出\n`);
-  //           break
-  //         }
-  //       }
-  //     }
-  //     if ($.exchangeBeanNum) {
-  //       message += `兑换京豆成功，获得${$.exchangeBeanNum * 100}京豆\n`;
-  //     }
-  //   }else{
-  //     console.log(`\n\n现金不够2元，不进行兑换200京豆，`)
-  //   }
-  // }
+  if (cash_exchange === 'true') {
+    if(Number($.signMoney) >= 2){
+      console.log(`\n\n开始花费2元红包兑换200京豆，一周可换五次`)
+      for (let item of ["-1", "0", "1", "2", "3"]) {
+        $.canLoop = true;
+        if ($.canLoop) {
+          for (let i = 0; i < 5; i++) {
+            await exchange2(item);//兑换200京豆(2元红包换200京豆，一周5次。)
+          }
+          if (!$.canLoop) {
+            console.log(`已找到符合的兑换条件，跳出\n`);
+            break
+          }
+        }
+      }
+      if ($.exchangeBeanNum) {
+        message += `兑换京豆成功，获得${$.exchangeBeanNum * 100}京豆\n`;
+      }
+    }else{
+      console.log(`\n\n现金不够2元，不进行兑换200京豆，`)
+    }
+  }
   await index(true)
   // await showMsg()
 }

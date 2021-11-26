@@ -84,7 +84,7 @@ async function jsRedPacket() {
     await reward_query();
     for (let i = 0; i < 3; ++i) {
       await redPacket();//开红包
-      await $.wait(2000)
+      await $.wait(4000)
     }
     await getPacketList();//领红包提现
     await signPrizeDetailList();
@@ -150,7 +150,7 @@ async function sign() {
 function reward_query() {
   return new Promise(resolve => {
     $.get(taskGetUrl("spring_reward_query", {
-      "inviter": ["HXZ60he5XxG8XNUF2LSrZg"][Math.floor((Math.random() * 1))],
+      "inviter": ["fJzA5RAXoXQTaWV_OS6-qQ"][Math.floor((Math.random() * 1))],
       linkId
     }), async (err, resp, data) => {
       try {
@@ -177,7 +177,7 @@ function reward_query() {
 }
 async function redPacket() {
   return new Promise(resolve => {
-    $.get(taskGetUrl("spring_reward_receive",{"inviter":["HXZ60he5XxG8XNUF2LSrZg"][Math.floor((Math.random() * 1))], linkId}),
+    $.get(taskGetUrl("spring_reward_receive",{"inviter":["fJzA5RAXoXQTaWV_OS6-qQ"][Math.floor((Math.random() * 1))], linkId}),
         async (err, resp, data) => {
           try {
             if (err) {
@@ -396,8 +396,8 @@ function cashOut(id,poolBaseId,prizeGroupId,prizeBaseId,) {
 function invite() {
   let t = +new Date()
   let inviterId = [
-    "5V7vHE23qh2EkdBHXRFDuA==",
-    "wXX9SjXOdYMWe5Ru/1+x9A=="
+    "9vOskAagcMJ4EOWXPQSS9A==",
+    "9irilvenEupYF488TUrl19DLuKQ9zWnXYHf9anC0ujw="
   ][Math.floor((Math.random() * 2))]
   var headers = {
     'Host': 'api.m.jd.com',

@@ -97,9 +97,5 @@
 5-45/20 * * * * node /scripts/jd_health_collect.js >> /scripts/logs/jd_health_collect.log 2>&1
 # 幸运大转盘
 10 10,23 * * * node /scripts/jd_market_lottery.js >> /scripts/logs/jd_market_lottery.log 2>&1
-# 跳跳乐瓜分京豆
-15 0,12,22 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
-# 京东试用
-5 1 * * * node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
 # 大乐透
 15 6 * * * node /scripts/jd_DrawEntrance.js >> /scripts/jd_DrawEntrance.log 2>&1
